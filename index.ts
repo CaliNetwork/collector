@@ -55,14 +55,32 @@ class Stat {
             old: 0
         };
         //Collect for the first time
-        for (const cpu of os.cpus()) {
-            totalTime.old += cpu.times.user + cpu.times.nice + cpu.times.sys + cpu.times.idle + cpu.times.irq
-            idleTime.old += cpu.times.idle
+        let data = await Bun.file('/proc/stat').text()
+        let rows = data.split('\n');
+        for (const row of rows) {
+            if (row !== '') {
+                const columns = row.trim().split(/\s+/);
+                if (columns[0] == "cpu") {
+                    totalTime.old = parseInt(columns[1]) + parseInt(columns[2]) + parseInt(columns[3]) + parseInt(columns[4]) + parseInt(columns[5]) + parseInt(columns[6]) + parseInt(columns[7])
+                    idleTime.old = parseInt(columns[4])
+                    break;
+                }
+
+
+            }
         }
         await Bun.sleep(120);
-        for (const cpu of os.cpus()) {
-            totalTime.new += cpu.times.user + cpu.times.nice + cpu.times.sys + cpu.times.idle + cpu.times.irq
-            idleTime.new += cpu.times.idle
+        data = await Bun.file('/proc/stat').text()
+        rows = data.split('\n');
+        for (const row of rows) {
+            if (row !== '') {
+                const columns = row.trim().split(/\s+/);
+                if (columns[0] == "cpu") {
+                    totalTime.new = parseInt(columns[1]) + parseInt(columns[2]) + parseInt(columns[3]) + parseInt(columns[4]) + parseInt(columns[5]) + parseInt(columns[6]) + parseInt(columns[7])
+                    idleTime.new = parseInt(columns[4])
+                    break;
+                }
+            }
         }
         //Collect cores
         result.cores = os.cpus().length
