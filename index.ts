@@ -1,5 +1,5 @@
 import { $ } from "bun";
-import type { fsObject, periodTime, netObjcet, cpuObject, memObject } from "./type";
+import type { fsObject, periodTime, netObjcet, cpuObject, memObject, osObject } from "./type";
 import os from 'os';
 
 class Stat {
@@ -98,6 +98,29 @@ class Stat {
 
         return result
     }
-
+    async os() {
+        let result: osObject = {
+            os: "Unknown",
+            version: 0
+        }
+        try {
+            const dataRaw = await Bun.file('/etc/os-release').text();
+            const rows = dataRaw.split('\n');
+            let data: any = {};
+            for (const row of rows) {
+                if (row !== '') {
+                    const [key, value] = row.split('=').map(str => str.trim());
+                    if (key !== undefined && value !== undefined) {
+                        data[key] = parseInt(value) * 1024;
+                    }
+                }
+            }
+            result.os = data.NAME;
+            result.version = parseInt(data.VERSION_ID)
+            return result
+        } catch (error) {
+            return result
+        }
+    }
 }
 export default new Stat

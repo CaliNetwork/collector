@@ -14,6 +14,7 @@ A library to collect StatData from your linux system, SPE ver for bun.sh
 |net|An object with your main network interface's rx and tx, in bytes|
 |cpu|An object with your core count and cpuUsage(Aka. CPUload) within 120ms|
 |mem|An object with your phy. mem's usage and swaps'|
+|os|An object with your OS name and OS
 
 2. Example
 
@@ -90,5 +91,21 @@ returns
         "used": 0,
         "total": 0
     }
+}
+```
+
+> os
+
+```
+import Stat from "fetchSys";
+console.log(await Stat.os());
+```
+
+returns
+
+```
+{
+    "os": "Debian GNU/Linux",
+    "version": 10
 }
 ```

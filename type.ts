@@ -26,6 +26,11 @@ export interface cpuObject {
     usage: number
 }
 
+export interface osObject {
+    os: string,
+    version: number
+}
+
 export interface periodTime {
     new: number,
     old: number
