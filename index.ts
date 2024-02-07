@@ -109,9 +109,12 @@ class Stat {
             let data: any = {};
             for (const row of rows) {
                 if (row !== '') {
-                    const [key, value] = row.split('=').map(str => str.trim());
+                    let [key, value] = row.split('=').map(str => str.trim());
                     if (key !== undefined && value !== undefined) {
-                        data[key] = parseInt(value) * 1024;
+                        if (value.charAt(0) === '"' && value.charAt(value.length - 1) === '"') {
+                            value = value.slice(1, -1);
+                        }
+                        data[key] = value
                     }
                 }
             }
